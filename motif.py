@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+msat/motif.py
+
+Part of 454_msatcommander.
+
+Created by Brant Faircloth on 2009-03-29.
+Copyright (c) 2009 Brant Faircloth. All rights reserved.
+"""
 mononucleotide=(1,'A','C')
 dinucleotide=(2,'AC','AG','AT','CG')
 trinucleotide=(3,'AAC','AAG','AAT','ACC','ACG','ACT','AGC','AGG','ATC','CCG')
