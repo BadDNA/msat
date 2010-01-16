@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-seqsearch.py
+msat/seqsearch.py
+
+Part of 454_msatcommander.
 
 Created by Brant Faircloth on 2009-03-29.
 Copyright (c) 2009 Brant Faircloth. All rights reserved.
 """
 
 import re
-#import pdb
+import pdb
 import string
 from Bio.Seq import Seq
 
@@ -72,11 +74,11 @@ ACACACNNACACAC is treated as a valid microsatellite.
     def __repr__(self):
         if not self.name:
             return (('< MicrosatelliteMotif instance, min_length %s, \
-            repeat_length %s, name is undefined >') % (self.min_length, \
+repeat_length %s >') % (self.min_length, \
             self.repeat_length))
         else:
             return (('< MicrosatelliteMotif instance, min_length %s, \
-            repeat_length %s, name: %s >') % (self.min_length, \
+repeat_length %s, name: %s >') % (self.min_length, \
             self.repeat_length, self.name))
     
     def _compile(self):
@@ -91,9 +93,12 @@ search classes'''
             bases = string.maketrans('AGCTagct','TCGAtcga')
             r = string.translate(f, bases)[::-1]
             if not self.perfect:
-                wild = 'N*(?:%s)+' % f
+                # forward motif wild-card
+                wild1 = 'N*(?:%s)+' % f
+                # reverse complement wild-card
+                wild2 = 'N*(?:%s)+' % r
                 rep_match = '(?:%s){%s,}%s|(?:%s){%s,}%s' % (f, \
-                self.min_length, wild, r, self.min_length, wild)
+                self.min_length, wild1, r, self.min_length, wild2)
             else:
                 rep_match = '(?:%s){%s,}|(?:%s){%s,}' % (f, self.min_length, \
                 r, self.min_length)
@@ -137,7 +142,7 @@ class RegionSearch:
         for repeat in range(len(msat.compiled)):
             temp_match = ()
             for m in msat.compiled[repeat].finditer(seq):
-                temp_match += (m.span(),)
+                temp_match += ((m.span(),m.span()[0],self.length-m.span()[1]),)
             if temp_match:
                 self.matches[msat.motif[repeat]] = temp_match
                 
